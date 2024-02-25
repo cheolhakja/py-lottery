@@ -4,7 +4,6 @@ import sys
 
 app = Flask(__name__)
 
-
 sys.stdin = open("password.txt")
 db_endpoint = sys.stdin.readline().strip()
 db_user = sys.stdin.readline().strip()
@@ -24,32 +23,53 @@ def submit():
     num_3 = request.form['dropdown3']
     num_4 = request.form['dropdown4']
 
+    member_list = find_by_name(username)
 
-    # Connect to the database
-    '''conn = pymysql.connect(host=db_endpoint,
+    if len(member_list) == 0:
+        return redirect('/')
+    
+    if check_duplicate_lottery_numbers(list(num_1, num_2,num_3,num_4,)) == False:
+        return redirect('/')
+
+    member = member_list[0]
+    member_id = member[0]
+    conn = pymysql.connect(host=db_endpoint,
                                  user=db_user,
                                  password=db_pw,
                                  database=db_name, port = 3306, use_unicode=True, charset='utf8')
 
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO users (username) VALUES (%s)"
-            cursor.execute(sql, (username,))
+            sql = "INSERT INTO ticket (member_id, num_1, num_2, num_3, num_4) VALUES (%s, %s, %s, %s, %s)"
+            #The mysql-python-connector only support %s
+            cursor.execute(sql, (member_id, num_1, num_2, num_3, num_4,))
             conn.commit()
     finally:
-        # Close the database connection
-        conn.close()'''
+        conn.close()
     
-    print(username)
-    print(num_1, num_2, num_3, num_4)
-
-    # Redirect the user back to the home page
     return redirect('/')
 
-if __name__ == '__main__':
+def find_by_name(name):
+    conn = pymysql.connect(host=db_endpoint,
+                                 user=db_user,
+                                 password=db_pw,
+                                 database=db_name, port = 3306, use_unicode=True, charset='utf8')
 
-    
-   
-    app.run(debug=True)
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT * FROM member WHERE name = %s"
+            cursor.execute(sql, (name,))
+            conn.commit()
+    finally:
+        conn.close()
+
+    return cursor.fetchall()
+
+
+def check_duplicate_lottery_numbers(numbers):
+    return len(set(numbers)) == 4
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
 
    
