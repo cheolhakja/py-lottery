@@ -23,16 +23,11 @@ def submit():
     num_3 = request.form['dropdown3']
     num_4 = request.form['dropdown4']
 
-    member_list = find_by_name(username)
-
-    if len(member_list) == 0:
-        return redirect('/')
-    
     if check_duplicate_lottery_numbers(list(num_1, num_2,num_3,num_4,)) == False:
         return redirect('/')
 
-    member = member_list[0]
-    member_id = member[0]
+    '''member = member_list[0]
+    member_id = member[0]'''
     conn = pymysql.connect(host=db_endpoint,
                                  user=db_user,
                                  password=db_pw,
@@ -40,16 +35,16 @@ def submit():
 
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO ticket (member_id, num_1, num_2, num_3, num_4) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO purchase (name, num_1, num_2, num_3, num_4) VALUES (%s, %s, %s, %s, %s)"
             #The mysql-python-connector only support %s
-            cursor.execute(sql, (member_id, num_1, num_2, num_3, num_4,))
+            cursor.execute(sql, (username, num_1, num_2, num_3, num_4,))
             conn.commit()
     finally:
         conn.close()
     
     return redirect('/')
 
-def find_by_name(name):
+'''def find_by_name(name):
     conn = pymysql.connect(host=db_endpoint,
                                  user=db_user,
                                  password=db_pw,
@@ -63,7 +58,7 @@ def find_by_name(name):
     finally:
         conn.close()
 
-    return cursor.fetchall()
+    return cursor.fetchall()'''
 
 
 def check_duplicate_lottery_numbers(numbers):
