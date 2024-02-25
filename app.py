@@ -18,12 +18,12 @@ def home():
 def submit():
     # Get the user input from the form
     username = request.form['username']
-    num_1 = request.form['dropdown1']
-    num_2 = request.form['dropdown2']
-    num_3 = request.form['dropdown3']
-    num_4 = request.form['dropdown4']
+    num_1 = int(request.form['dropdown1'])
+    num_2 = int(request.form['dropdown2'])
+    num_3 = int(request.form['dropdown3'])
+    num_4 = int(request.form['dropdown4'])
 
-    if check_duplicate_lottery_numbers(list(num_1, num_2,num_3,num_4,)) == False:
+    if check_duplicate_lottery_numbers([num_1, num_2,num_3,num_4]) == False:
         return redirect('/')
 
     '''member = member_list[0]
