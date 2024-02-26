@@ -29,12 +29,45 @@ def submit():
         return redirect('/')
     
     # ---------- 이름이 동아리 부원 목록에 있는지 확인 ----------
+    conn = pymysql.connect(host=db_endpoint, user=db_user, password=db_pw, database=db_name, port = 3306, use_unicode=True, charset='utf8')
 
+    try:
+        with conn.cursor() as cursor:
+            sql = "select * from buy_time"
+            cursor.execute(sql)
+            conn.commit()
+    finally:
+        conn.close()
+
+    result = cursor.fetchall()
+
+    member_names = [ i[1] for i in result]
+
+    if username not in member_names:
+        return redirect('/')
 
     # ------------------------------
 
-    # ---------- 하루에 하나로 구매 제한 ----------
 
+
+    # ---------- 하루에 하나로 구매 제한 ----------
+    from datetime import datetime
+
+    now = datetime.now()    
+
+    for i in result:
+        if i[1] == username:
+            last_time_buy = i[2]
+            current_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+            last_time_buy = last_time_buy[:10]
+            current_time = current_time[:10]
+
+            if last_time_buy >= current_time:
+                return redirect('/')
+
+
+    
     # ------------------------------
 
 
@@ -53,6 +86,20 @@ def submit():
     finally:
         conn.close()
     
+    # ----------
+        
+    # ---------- 최근 구매 시간 업데이트 ----------
+    conn = pymysql.connect(host=db_endpoint, user=db_user, password=db_pw, database=db_name, port = 3306, use_unicode=True, charset='utf8')
+
+    try:
+        with conn.cursor() as cursor:
+            sql = "UPDATE buy_time SET last_time_buy = %s where member_name = %s"
+            cursor.execute(sql, (now.strftime('%Y-%m-%d %H:%M:%S'),username))
+            conn.commit()
+    finally:
+        conn.close()    
+    # ----------
+        
     return redirect('/')
 
 
