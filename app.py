@@ -79,7 +79,7 @@ def submit():
 
     try:
         with conn.cursor() as cursor:
-            sql = "INSERT INTO purchase (name, num_1, num_2, num_3, num_4) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO purchase (member_name, num_1, num_2, num_3, num_4) VALUES (%s, %s, %s, %s, %s)"
             #The mysql-python-connector only support %s
             cursor.execute(sql, (username, num_1, num_2, num_3, num_4,))
             conn.commit()
@@ -103,7 +103,7 @@ def submit():
     # ----------
         
 
-        
+
     return redirect('/')
 
 
