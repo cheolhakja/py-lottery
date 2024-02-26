@@ -88,6 +88,8 @@ def submit():
     
     # ----------
         
+
+
     # ---------- 최근 구매 시간 업데이트 ----------
     conn = pymysql.connect(host=db_endpoint, user=db_user, password=db_pw, database=db_name, port = 3306, use_unicode=True, charset='utf8')
 
@@ -99,6 +101,8 @@ def submit():
     finally:
         conn.close()    
     # ----------
+        
+
         
     return redirect('/')
 
