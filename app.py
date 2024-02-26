@@ -27,7 +27,18 @@ def submit():
 
     if check_duplicate_lottery_numbers([num_1, num_2,num_3,num_4]) == False:
         return redirect('/')
+    
+    # ---------- 이름이 동아리 부원 목록에 있는지 확인 ----------
 
+
+    # ------------------------------
+
+    # ---------- 하루에 하나로 구매 제한 ----------
+
+    # ------------------------------
+
+
+    # ---------- 구매 ----------
     conn = pymysql.connect(host=db_endpoint,
                                  user=db_user,
                                  password=db_pw,
