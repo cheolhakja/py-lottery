@@ -52,8 +52,9 @@ def submit():
 
     # ---------- 하루에 하나로 구매 제한 ----------
     from datetime import datetime
+    from pytz import timezone
 
-    now = datetime.now()    
+    now = datetime.now(timezone('Asia/Seoul'))   
 
     for i in result:
         if i[1] == username:
